@@ -81,7 +81,7 @@ void Task_Init()
     UART_Init(&huart1, ER08_UART1_Callback, 19);
     UART_Init(&huart2, Tjc011_UART2_Callback, 20);
     UART_Init(&huart5, SIM_UART5_Callback, 20);
-		HAL_UART_Receive_IT(&huart1, UART1_Manage_Object.Rx_Buffer, 19);
+	HAL_UART_Receive_IT(&huart1, UART1_Manage_Object.Rx_Buffer, 19);
 
     /********************************* 设备层初始化 *********************************/
 

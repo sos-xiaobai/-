@@ -15,6 +15,10 @@ void Class_Cargo_List::Add_Cargo(uint8_t Position_X, uint8_t Position_Y, uint8_t
     New_Cargo->Position_X = Position_X;
     New_Cargo->Position_Y = Position_Y;
     New_Cargo->Cargo_Save_Time_Max = CARGO_SAVE_TIME_MAX;
+    New_Cargo->Cargo_Save_Time = 0;
+    New_Cargo->Cargo_Save_Time_Cnt = 0;
+    New_Cargo->Cargo_Take_Warning_Flag = false;
+    New_Cargo->Cargo_Take_Change_Flag = false;
 
     memcpy(New_Cargo->Phone_Number, Phone_Number, 11 );
     memcpy(New_Cargo->Code, Code, 4 * sizeof(uint8_t));
@@ -62,6 +66,19 @@ Struct_Cargo* Class_Cargo_List::Exist_Cargo(uint8_t Code[4])
     return NULL;
 }
 
+Struct_Cargo* Class_Cargo_List::Exist_Cargo_phone(uint8_t Code[4])
+{
+    Struct_Cargo* p = First_Cargo;
+    while (p != NULL)
+    {
+        if (p->Phone_Number[7] == Code[0] && p->Phone_Number[8] == Code[1] && p->Phone_Number[9] == Code[2] && p->Phone_Number[10] == Code[3])
+        {
+            return p;
+        }
+        p = p->Next_Cargo;
+    }
+    return NULL;
+}
 
 
 

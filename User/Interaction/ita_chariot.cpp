@@ -232,9 +232,10 @@ void Class_Chariot::Init()
     Chassis.Init();
 
     Cargo_List.Init();
+    Now_Cargo_List.Init();
 
     Now_Cargo_Number = 0;
-    // memset(&Now_Cargo, 0, 10 * sizeof(Struct_Cargo));
+    memset(Now_Cargo_List_Code, 0, 40 * sizeof(uint8_t));
 }
 
 uint8_t Class_Chariot::Get_Cargo_Data()
@@ -365,6 +366,28 @@ void Class_FSM_Chariot_Control::Reload_TIM_Status_PeriodElapsedCallback()
                 Set_Status(1);
             }
         }
+        //如果输入手机尾号后四位 更新需要取件的货物信息
+        if(Chariot->Tjc011.Change_data_Flag)
+        {
+            Struct_Cargo* p = Chariot->Cargo_List.First_Cargo;
+            uint8_t Code[4] = {0};
+            //得到输入的尾号
+            memcpy(Code,Chariot->Tjc011.Get_change_number(),4);
+            while (p != NULL)
+            {
+                uint8_t i = 0;  //索引 存放对应手机尾号的货物取件码
+                if (p->Phone_Number[7] == Code[0] && p->Phone_Number[8] == Code[1] && p->Phone_Number[9] == Code[2] && p->Phone_Number[10] == Code[3])
+                {
+                    //记录信息
+                    memcpy(&Chariot->Now_Cargo_List_Code[i][0],p->Code,4);
+                    //添加到链表
+                    Chariot->Cargo_List.Add_Cargo(p->Position_X,p->Position_Y,p->Phone_Number,p->Code);
+                    i++;
+                }
+                p = p->Next_Cargo;
+            }
+
+        }
 
         // 获取取件码信息 如果更新就获取信息 转到取件状态
         if (Chariot->Tjc011.Input_data_Flag)
@@ -377,6 +400,24 @@ void Class_FSM_Chariot_Control::Reload_TIM_Status_PeriodElapsedCallback()
             else
                 rgb_SetAllColor(RED);
             Chariot->Tjc011.Input_data_Flag = 0;
+        }
+
+        //如果待取件链表不为空 就一直进行取件操作
+        if(Chariot->Now_Cargo_List.First_Cargo != NULL)
+        {
+            for(uint8_t i =0;i<10;i++)
+            {
+                //如果取件码存在
+                Struct_Cargo *tmp = Chariot->Now_Cargo_List.Exist_Cargo(&Chariot->Now_Cargo_List_Code[i][0]);
+                if (tmp != NULL)
+                {
+                    //赋值到当前货物信息 并且删除待取件链表中的货物
+                    memcpy(&Chariot->Now_Cargo, tmp, sizeof(Struct_Cargo));
+                    Chariot->Now_Cargo_List.Delete_Cargo(Chariot->Now_Cargo.Code);
+                }          
+                Chariot->Set_Control_Status(Chariot_Output_Cargo_Status);
+                Set_Status(1);
+            }
         }
     }
     break;

@@ -16,13 +16,16 @@ public:
     void Init(UART_HandleTypeDef *huart);
     void UART_RxCpltCallback(uint8_t *Rx_Data);
     inline char * Get_Input_Number(void);
+    inline char * Get_change_number(void);
 
     uint8_t Input_data_Flag=0;
+    uint8_t Change_data_Flag=0;
 
 protected:
     void Data_Process();
 
     char input_number[4];
+    char change_number[4];
 
     Struct_UART_Manage_Object *UART_Manage_Object;
     Struct_Tjc011_UART_Data Now_UART_Rx_Data;
@@ -31,4 +34,10 @@ protected:
 char * Class_Tjc011::Get_Input_Number()
 {
     return (input_number);
+}
+
+
+char * Class_Tjc011::Get_change_number()
+{
+    return (change_number);
 }

@@ -69,11 +69,15 @@ public:
     Class_SIM900A SIM900A;
     Class_Tjc011 Tjc011;
     Class_Cargo_List Cargo_List;
+    Class_Cargo_List Now_Cargo_List;
     Struct_Cargo Now_Cargo;
     uint8_t Now_Cargo_Number;
     Class_Servo Servo[4];
     Enum_Chariot_Control_Status Control_Status = Chariot_Disable_Status;
     friend class Class_FSM_Chariot_Control;
+
+    //初始一个10*4的货物取件码列表
+    uint8_t Now_Cargo_List_Code[10][4];
 
     void Init();
 

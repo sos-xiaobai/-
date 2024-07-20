@@ -56,10 +56,17 @@ void Class_Tjc011::Data_Process()
         memcpy(input_number, tmp_buffer->data, data_length);
         //input_number[data_length] = '\0';
         a = strlen(input_number);
+        Input_data_Flag = 1;
+    }
+    if(tmp_buffer->header == 0xAA)
+    {
+        uint8_t data_length = tmp_buffer->len;
+        //获得取件码后四位
+        Change_data_Flag = 1;
     }
     memcpy(UART_Manage_Object->Rx_Buffer,0,20 * sizeof(uint8_t));
 
-    Input_data_Flag = 1;
+    
 }
 
 /**

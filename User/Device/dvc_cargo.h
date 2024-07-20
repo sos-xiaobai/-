@@ -34,6 +34,7 @@ public:
     void Add_Cargo(uint8_t Position_X, uint8_t Position_Y, uint8_t* Phone_Number, uint8_t* Code);
     void Delete_Cargo(uint8_t Code[4]);
     Struct_Cargo* Exist_Cargo(uint8_t Code[4]);
+    Struct_Cargo* Exist_Cargo_phone(uint8_t Code[4]);
 };
 
 #endif
